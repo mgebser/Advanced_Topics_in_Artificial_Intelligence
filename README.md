@@ -6,3 +6,5 @@ This repository collects course materials for Advanced Topics in Artificial Inte
 
 * [Slides](./Slides): Course slides and accompanying logic program files in subfolders.
 
+* [Exercise_1](./Exercise_1): Example ASP modeling tasks to be investigated in the course sessions on October 16 and October 23.
+
