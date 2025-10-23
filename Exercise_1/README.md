@@ -13,3 +13,5 @@ This exercise is about completing partial ASP encodings for three problems:
 * [ricochet_robots](./ricochet_robots): The board game [Ricochet Robots](https://en.wikipedia.org/wiki/Ricochet_Robots) is a challenging grid puzzle. It has already been investigated as a [benchmark problem for ASP systems](https://potassco.org/labs/ricochet/). The goal is to
 complete the partial encoding given in [ricochet_robots.lp](./ricochet_robots/ricochet_robots.lp), where the Python script [visualize.py](./ricochet_robots/visualize.py) is an
 adjusted version of the visualization script shipped with the [clingo examples](https://github.com/potassco/clingo/tree/master/examples/clingo/robots#a-ricochet-robots-solver).
+
+  The complete problem encoding developed during the course session on October 23 is available as [ricochet_robots.sol.lp](./ricochet_robots/ricochet_robots.sol.lp).
