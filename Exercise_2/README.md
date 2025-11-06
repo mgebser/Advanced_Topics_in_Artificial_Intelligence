@@ -6,4 +6,6 @@ This exercise is about switching from standard one-shot ASP encodings to multi-s
 
   However, this script creates a new clingo instance, which grounds and solves from scratch, for each plan length. This introduces redundancy that should be removed by modifying both the encoding in [hanoi_tower.lp](./hanoi_tower/hanoi_tower.lp) and the script in [control.py](./hanoi_tower/control.py) in such a way that the same clingo instance can process all investigated plan lengths by multi-shot solving. (The idea of clingo's [incmode](https://github.com/potassco/clingo/tree/master/examples/clingo/iclingo) is similar, and the specific re-implementation for Towers of Hanoi should illustrate [clingo's Python API](https://potassco.org/clingo/python-api/current/).)
 
+  The revised problem encoding and Python script developed during the course session on November 6 are available as [hanoi_tower.sol.lp](./hanoi_tower/hanoi_tower.sol.lp) and [control.sol.py](./hanoi_tower/control.sol.py).
+
 * [ricochet_robots](./ricochet_robots): The goal is to modify the encoding in [ricochet_robots.lp](./ricochet_robots/ricochet_robots.lp) and the script in [control.py](./ricochet_robots/control.py) such that the same clingo instance and multi-shot solving are used over rounds of the [Ricochet Robots](https://en.wikipedia.org/wiki/Ricochet_Robots) board game.
