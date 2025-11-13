@@ -9,3 +9,5 @@ This exercise is about switching from standard one-shot ASP encodings to multi-s
   The revised problem encoding and Python script developed during the course session on November 6 are available as [hanoi_tower.sol.lp](./hanoi_tower/hanoi_tower.sol.lp) and [control.sol.py](./hanoi_tower/control.sol.py).
 
 * [ricochet_robots](./ricochet_robots): The goal is to modify the encoding in [ricochet_robots.lp](./ricochet_robots/ricochet_robots.lp) and the script in [control.py](./ricochet_robots/control.py) such that the same clingo instance and multi-shot solving are used over rounds of the [Ricochet Robots](https://en.wikipedia.org/wiki/Ricochet_Robots) board game.
+
+  The revised problem encoding and Python script developed during the course session on November 13 are available as [ricochet_robots.sol.lp](./ricochet_robots/ricochet_robots.sol.lp) and [control.sol.py](./ricochet_robots/control.sol.py).
