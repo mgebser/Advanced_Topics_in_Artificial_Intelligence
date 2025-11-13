@@ -1,10 +1,5 @@
 % COMMANDS TO RUN:
-% clingo board.lp ricochet_robots.lp --stats --opt-strategy=usc
-% clingo board.lp ricochet_robots.lp --stats
-% clingo board.lp ricochet_robots.lp --stats --const motif=sun --const color=red --opt-strategy=usc
-% clingo board.lp ricochet_robots.lp --stats --const motif=sun --const color=red
-% clingo board.lp ricochet_robots.lp --stats --const motif=sun --const color=green --opt-strategy=usc
-% clingo board.lp ricochet_robots.lp --stats --const motif=sun --const color=green
+% python control.py
 
 % DOMAIN: Auxiliary constants and predicates on available targets and obstacles
 
@@ -21,8 +16,8 @@ time(1..moves).
 #const motif = moon.
 
 % Color and motif yield target position for a robot
-#external target(R,X,Y) : available_target(R,M,X,Y).
 % target(color,X,Y) :- available_target(color,motif,X,Y).
+#external target(R,X,Y) : available_target(R,M,X,Y).
 
 % Neighboring positions are adjacent in either horizontal or vertical direction
 dir(-1,0;1,0;0,-1;0,1).
@@ -36,8 +31,8 @@ stop(X   ,Y,     0, DY) :- dim(X), dim(Y), dir(0,DY), not dim(Y+DY).
 % GENERATE + DEFINE + TEST: Choose robot moves, update positions, end at target
 
 % Robots start from initial positions
-#external pos(R,X,Y,0) : robot(R), dim(X), dim(Y).
 % pos(R,X,Y,0) :- initial_pos(R,X,Y).
+#external pos(R,X,Y,0) : robot(R), dim(X), dim(Y).
 
 % Target must be reached after at most 'moves' many robot moves
 :- target(R,X,Y), not pos(R,X,Y,moves).
