@@ -12,22 +12,22 @@ time(1..T) :- horizon(T).
 dir(-1;1).
 
 % Elevators start from their initial floors
-at(E,F,0) :- init(E,F).
+% at(E,F,0) :- init(E,F).
 
 % GENERATE + DEFINE + TEST: Choose elevator moves, serve actions, update states
 
 % An elevator call request into the direction D (-1 or 1) is unserved at time 0
-todo_call(F,D,0) :- call(F,D).
+% todo_call(F,D,0) :- call(F,D).
 
 % A delivery request of elevator E to floor F is unserved at time 0
-todo_deliver(E,F,0) :- deliver(E,F).
+% todo_deliver(E,F,0) :- deliver(E,F).
 
 % All call and delivery requests must have been served at latest at the horizon
 :- todo_call(F,D,T), horizon(T).
 :- todo_deliver(E,F,T), horizon(T).
 
 % Each call request is to be served by (exactly) one elevator
-{assign(E,F,D) : elevator(E)} = 1 :- call(F,D).
+{assign(E,F,D) : elevator(E)} = 1 :- todo_call(F,D,0).
 
 % Elevator E has to perform some actions to serve a call request assigned to it
 todo(E,F,D,T) :- todo_call(F,D,T-1), time(T), assign(E,F,D).
@@ -94,9 +94,9 @@ at(E,F,T) :- at(E,F,T-1), serve(E,D,T).
 
 % DISPLAY: Output the floors and move or serve actions performed by elevators
 
-% #show at/3.
-% #show move/3.
-% #show serve/3.
+#show at/3.
+#show move/3.
+#show serve/3.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: Add rules/constraints making sure that ... %
