@@ -3,8 +3,8 @@ call(F,D,T,0) :- call(F,D,T).
 
 call_deliver(F',D,T,F,0) :- call_deliver(F',D,T,F).
 
-#const n=0.
-% #program next(n).
+% #const n=0.
+#program next(n).
 
 has_call(F,D,T,T+1,n) :- call(F,D,T,n),
                          not serve_call(F,D,T,n), not has_call(F,D,T,n).
