@@ -1,0 +1,16 @@
+call(3,-1).
+call(3,1).
+call(4,-1).
+call(5,-1).
+deliver(e(2),4).
+elevator(e(1)).
+elevator(e(2)).
+floor(1).
+floor(2).
+floor(3).
+floor(4).
+floor(5).
+horizon(15).
+init(e(1),1).
+init(e(2),2).
+priority(e(2),1).
