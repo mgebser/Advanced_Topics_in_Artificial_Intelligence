@@ -7,11 +7,30 @@ import sys
 import clingo
 from clingo import Number, Function
 
-step = -1
-todo = True
+# mimick clingo's statistics output from Python script
+def print_stats(ctl):
+    print()
+    print("Models       : " + str(int(ctl.statistics["summary"]["models"]["enumerated"])))
+    print("Calls        : " + str(int(ctl.statistics["summary"]["call"]) + 1))
+    print("Time         : " + "{:.3f}".format(ctl.statistics["summary"]["times"]["total"]) + "s (Solving: " + "{:.2f}".format(ctl.statistics["summary"]["times"]["solve"]) + "s 1st Model: " + "{:.2f}".format(ctl.statistics["summary"]["times"]["sat"]) + "s Unsat: " + "{:.2f}".format(ctl.statistics["summary"]["times"]["unsat"]) + "s)")
+    print("CPU Time     : " + "{:.3f}".format(ctl.statistics["summary"]["times"]["cpu"]) + "s")
 
+    print()
+    print("Choices      : " + str(int(ctl.statistics["solving"]["solvers"]["choices"])))
+    print("Conflicts    : " + str(int(ctl.statistics["solving"]["solvers"]["conflicts"])) + "    (Analyzed: " + str(int(ctl.statistics["solving"]["solvers"]["conflicts_analyzed"])) + ")")
+
+    print()
+    print("Variables    : " + str(int(ctl.statistics["problem"]["generator"]["vars"])) + "    (Eliminated:    " + str(int(ctl.statistics["problem"]["generator"]["vars_eliminated"])) + " Frozen: " + str(int(ctl.statistics["problem"]["generator"]["vars_frozen"])) + ")")
+    constraints_binary = ctl.statistics["problem"]["generator"]["constraints_binary"]
+    constraints_ternary = ctl.statistics["problem"]["generator"]["constraints_ternary"]
+    constraints_other = ctl.statistics["problem"]["generator"]["constraints"]
+    constraints = int(constraints_binary + constraints_ternary + constraints_other)
+    print("Constraints  : " + str(constraints) + "   (Binary:  " + "{:.1f}".format(100 * constraints_binary / constraints) + "% Ternary:  " + "{:.1f}".format(100 * constraints_ternary / constraints) + "% Other:   " + "{:.1f}".format(100 * constraints_other / constraints) + "%)")
+
+# print model(s) together with a running number and read off next state + events
 def on_model(m):
     global step
+    global time
     global answer
     global todo
     global state
@@ -28,6 +47,7 @@ def on_model(m):
             n = args.pop(1).number
             if n == step:
                 print(atom.name + "(" + str(args[0]) + ")", end=" ")
+                time += args[0].number
                 todo = True
         elif atom.name == "next_at" or atom.name == "next_priority":
             n = args.pop(3).number
@@ -41,12 +61,9 @@ def on_model(m):
             n = args.pop(3).number
             if n == step:
                 if args[2].number == 0:
-                    todo_atom = Function("todo_" + atom.name[5:], args)
-                    state.append(todo_atom)
-                    print("TODO: " + str(todo_atom))
-                else:
-                    args.append(Number(n+1))
-                    event.append(Function(atom.name[5:], args))
+                    state.append(Function("todo_" + atom.name[5:], args))
+                args.append(Number(n+1))
+                event.append(Function(atom.name[5:], args))
         elif atom.name == "next_call_deliver":
             n = args.pop(4).number
             if n == step:
@@ -54,52 +71,74 @@ def on_model(m):
                 event.append(Function(atom.name[5:], args))
         else: print(atom, end=" ")
     print("\nOptimization: " + str(m.cost[0]))
-#    print([str(a) for a in state])
-#    print([str(a) for a in event])
+
+step = -1
+time = 0
+todo = True
+state = []
+event = []
 
 while todo:
     step = step+1
     todo = False
     answer = 1
 
-    print("===========================")
-    print("Call: " + str(step))
-
+### DO SOMETHING LIKE THIS BEFORE THE WHILE LOOP TO PERFORM MULTI-SHOT SOLVING
     ctl = clingo.Control(arguments = ["--opt-strategy", "usc", "--warn", "none"])
     for arg in sys.argv[1:]: ctl.load(arg)
     ctl.load("next.lp")
 
-#    if step == 0: ctl.add("at(E,F,0) :- init(E,F). todo_call(F,D,0) :- call(F,D). todo_deliver(E,F,0) :- deliver(E,F). priority(E,D,0) :- priority(E,D).")
-
-    ctl.ground([("instance", [])])
-
-    facts_name = "fact_" + str(step)
-    events_name = "events_" + str(step)
-    facts = ""
-    events = ""
+    ctl.ground([("instance", []), ("events", [])])
     if step == 0:
         for atom in ctl.symbolic_atoms.by_signature("init", 2):
             args = atom.symbol.arguments
-            facts += "at(" + str(args[0]) + "," + str(args[1]) + ",0)."
+            args.append(Number(0))
+            state.append(Function("at", args))
         for atom in ctl.symbolic_atoms.by_signature("call", 2):
             args = atom.symbol.arguments
-            facts += "todo_call(" + str(args[0]) + "," + str(args[1]) + ",0)."
+            args.append(Number(0))
+            state.append(Function("todo_call", args))
+            args.append(Number(0))
+            event.append(Function("call", args))
         for atom in ctl.symbolic_atoms.by_signature("deliver", 2):
             args = atom.symbol.arguments
-            facts += "todo_deliver(" + str(args[0]) + "," + str(args[1]) + ",0)."
+            args.append(Number(0))
+            state.append(Function("todo_deliver", args))
         for atom in ctl.symbolic_atoms.by_signature("priority", 2):
             args = atom.symbol.arguments
-            facts += "priority(" + str(args[0]) + "," + str(args[1]) + ",0)."
-    else:
-        facts = ".".join([str(a) for a in state]) + "."
-        events = ".".join([str(a) for a in event]) + "."
-        ctl.add(events_name, [], events)
-#        print(facts)
-#        print(events)
-    
-#    print(facts)
-    ctl.add(facts_name, [], facts)
-    ctl.ground([("base", []), ("next", [Number(step)]), (facts_name, []), (events_name, [])])
-    ctl.solve(on_model = on_model)
-    if step == 3: sys.exit()
+            args.append(Number(0))
+            state.append(Function("priority", args))
+        for atom in ctl.symbolic_atoms.by_signature("call", 3):
+            args = atom.symbol.arguments
+            args.append(Number(0))
+            event.append(Function("call", args))
+        for atom in ctl.symbolic_atoms.by_signature("call_deliver", 4):
+            args = atom.symbol.arguments
+            args.append(Number(0))
+            event.append(Function("call_deliver", args))
 
+        print("INITIAL STATE:", end="  ")
+        print([str(a) for a in state])
+        print("INITIAL EVENTS:", end=" ")
+        print([str(a) for a in event])
+### THE WHOLE ABOVE PART SHOULD NOT BE IN THE WHILE LOOP FOR MULTI-SHOT SOLVING
+
+    facts_name = "fact_" + str(step) # UTILIZE EXTERNALS FOR MULTI-SHOT SOLVING
+    events_name = "event_" + str(step) # the event program can be used as it is
+
+    if state: ctl.add(facts_name, [], ".".join([str(a) for a in state]) + ".")
+    if event: ctl.add(events_name, [], ".".join([str(a) for a in event]) + ".")
+
+    print("===========================")
+    print("CALL " + str(step) + " AT TIME " + str(time))
+
+    ctl.ground([("base", []), ("next", [Number(step)]), (events_name, []), (facts_name, [])])
+    ctl.solve(on_model = on_model)
+
+    print("NEXT STATE:", end="  ")
+    print([str(a) for a in state])
+    print("NEXT EVENTS:", end=" ")
+    print([str(a) for a in event])
+
+# statistics can be printed by uncommenting the next line
+#    print_stats(ctl)

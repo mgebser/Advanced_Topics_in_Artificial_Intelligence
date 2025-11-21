@@ -1,7 +1,5 @@
 % EXAMPLE COMMANDS TO RUN:
-% clingo instance_05.lp elevator.lp --opt-strategy=usc --configuration=handy --stats
-% clingo instance_10.lp elevator.lp --opt-strategy=usc --configuration=handy --stats
-% clingo instance_15.lp elevator.lp --opt-strategy=usc --configuration=handy --stats
+% python control.py instance_04.lp events_04.lp elevator.lp
 
 % DOMAIN: Auxiliary predicates on available time points and directions
 
@@ -97,8 +95,6 @@ at(E,F,T) :- at(E,F,T-1), serve(E,D,T).
 #show at/3.
 #show move/3.
 #show serve/3.
-#show todo_call(F,D,0) : todo_call(F,D,0).
-#show todo_deliver(E,F,0) : todo_deliver(E,F,0).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % TODO: Add rules/constraints making sure that ... %

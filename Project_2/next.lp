@@ -1,9 +1,3 @@
-call(F,D,0,0) :- call(F,D).
-call(F,D,T,0) :- call(F,D,T).
-
-call_deliver(F',D,T,F,0) :- call_deliver(F',D,T,F).
-
-% #const n=0.
 #program next(n).
 
 has_call(F,D,T,T+1,n) :- call(F,D,T,n),
@@ -57,7 +51,7 @@ next_priority(E,D,T,n) :- can_deliver(E,F,T), move(E,-D,T), next_schedule(T,n).
 #show next_at(E,F,0,n) : next_at(E,F,T,n), next_schedule(T,n).
 
 #show next_call(F,D,0,n)    : has_call(F,D,T+1,n), next_schedule(T,n).
-#show next_call(F,D,T'-T,n) : call(F,D,T'), next_schedule(T,n), T < T'.
+#show next_call(F,D,T'-T,n) : call(F,D,T',n), next_schedule(T,n), T < T'.
 
 #show next_deliver(E,F,0,n) : todo_deliver(E,F,T), next_schedule(T,n).
 #show next_deliver(E,F,0,n) : next_deliver(E,F,T,n), next_schedule(T,n).
@@ -66,7 +60,7 @@ next_priority(E,D,T,n) :- can_deliver(E,F,T), move(E,-D,T), next_schedule(T,n).
 #show next_priority(E,D,0,n) : next_priority(E,D,T,n), serve(E,D,T).
 #show next_priority(E,D,0,n) : next_priority(E,D,T,n), not next_priority(E,-D,T,n).
 
-#show next_call_deliver(F',D,0,F,n)    : call_deliver(F',D,T',F,n), 
+#show next_call_deliver(F',D,0,F,n)    : call_deliver(F',D,T',F,n),
                                          next_schedule(T,n),
                                          has_call(F',D,T',T+1,n).
 #show next_call_deliver(F',D,T'-T,F,n) : call_deliver(F',D,T',F,n),
