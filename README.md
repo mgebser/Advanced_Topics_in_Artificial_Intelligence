@@ -14,3 +14,5 @@ This repository collects course materials for Advanced Topics in Artificial Inte
 
 * [Exercise_2](./Exercise_2): Example multi-shot ASP solving tasks to be investigated in the course sessions on November 6 and on November 13.
 
+* [Project_2](./Project_2): Description and framework (problem instances, their reference solutions, and a problem encoding to extend) for the first project to be solved in groups of up to two students by **December 3**.
+
