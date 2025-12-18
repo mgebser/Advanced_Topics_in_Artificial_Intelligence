@@ -9,7 +9,7 @@
 
 &diff{makespan - 0} <= h-1 :- not bound(h).
 
-% Minimize sum of job delays (w.r.t. the bound 'h+1' on makespan)
+% Minimize sum of job delays (w.r.t. the optimal bound 'h' on makespan)
 
 #program delays(h).
 
