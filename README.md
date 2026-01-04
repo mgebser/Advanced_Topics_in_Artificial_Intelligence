@@ -18,4 +18,4 @@ This repository collects course materials for Advanced Topics in Artificial Inte
 
 * [Project_2](./Project_2): Description and framework (problem instances, a problem encoding and a Python script for iterated replanning) for the second project to be solved in groups of up to two students by ~~December 3~~ **December 10**.
 
-* [Project_3](./Project_3): The detailed description of this project will appear soon.
+* [Project_3](./Project_3): Description and framework (problem instances plus basic and revised versions of a problem encoding and a Python script for iterated replanning) for the second project to be solved in groups of up to two students by **January 21**.
